@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <VHeader></VHeader>
+    <VHeader :seller="seller"></VHeader>
     <div class="tab border-1px">
       <div class="tab-item">
         <router-link to="/goods">商品</router-link>
@@ -18,11 +18,26 @@
 
 <script>
   import VHeader from 'components/v-header/v-header'
+  import axios from 'axios'
+
+  const ERR_OK = 200
 
   export default {
     name: 'app',
+    data() {
+      return {
+        seller: {}
+      }
+    },
     components: {
       VHeader
+    },
+    created() {
+      axios.get('https://easy-mock.com/mock/5d31ca59b047ba213269b656/api2/seller').then(response => {
+        if (response.status === ERR_OK) {
+          this.seller = response.data
+        }
+      })
     }
   }
 </script>
