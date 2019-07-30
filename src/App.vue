@@ -12,13 +12,16 @@
         <router-link to="/seller">商家</router-link>
       </div>
     </div>
-    <router-view></router-view>
+    <keep-alive>
+      <router-view :seller="seller"></router-view>
+    </keep-alive>
   </div>
 </template>
 
 <script>
   import VHeader from 'components/v-header/v-header'
   import axios from 'axios'
+  import { urlParse } from 'common/js/util'
 
   const ERR_OK = 200
 
@@ -26,16 +29,21 @@
     name: 'app',
     data() {
       return {
-        seller: {}
+        seller: {
+          id: (() => {
+            let queryParam = urlParse()
+            return queryParam.id
+          })()
+        }
       }
     },
     components: {
       VHeader
     },
     created() {
-      axios.get('https://easy-mock.com/mock/5d31ca59b047ba213269b656/api2/seller').then(response => {
+      axios.get('https://easy-mock.com/mock/5d31ca59b047ba213269b656/api2/seller?id=' + this.seller.id).then(response => {
         if (response.status === ERR_OK) {
-          this.seller = response.data
+          this.seller = Object.assign({}, this.seller, response.data)
         }
       })
     }
